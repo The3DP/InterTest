@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Internet Speed Test</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    .result {
+      font-size: 1.5em;
+      margin: 15px 0;
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 1.2em;
+      margin-top: 20px;
+      cursor: pointer;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Advanced Internet Speed Test</h1>
+  <div id="ping" class="result">Ping: ...</div>
+  <div id="download" class="result">Download: ...</div>
+  <div id="upload" class="result">Upload: ...</div>
+  <button onclick="startTest()">Start Test</button>
 
+  <script>
+    async function measurePing(url, attempts = 5) {
+      let total = 0;
+      for (let i = 0; i < attempts; i++) {
+        const start = performance.now();
+        try {
+          await fetch(url + "?cache=" + Math.random());
+        } catch (e) {}
+        const end = performance.now();
+        total += (end - start);
+      }
+      return total / attempts;
+    }
+
+    async function measureDownload(url, sizeInMB = 10) {
+      const start = performance.now();
+      try {
+        await fetch(url + "?cache=" + Math.random());
+      } catch (e) {}
+      const end = performance.now();
+      const duration = (end - start) / 1000;
+      const speedMbps = (sizeInMB * 8) / duration;
+      return speedMbps;
+    }
+
+    async function measureUpload(url, sizeInMB = 2) {
+      const data = new Uint8Array(sizeInMB * 1024 * 1024);
+      const start = performance.now();
+      try {
+        await fetch(url, {
+          method: "POST",
+          body: data
+        });
+      } catch (e) {}
+      const end = performance.now();
+      const duration = (end - start) / 1000;
+      const speedMbps = (sizeInMB * 8) / duration;
+      return speedMbps;
+    }
+
+    async function startTest() {
+      document.getElementById("ping").textContent = "Ping: Testing...";
+      document.getElementById("download").textContent = "Download: Testing...";
+      document.getElementById("upload").textContent = "Upload: Testing...";
+
+      const ping = await measurePing("https://cors-anywhere.herokuapp.com/https://example.com");
+      document.getElementById("ping").textContent = `Ping: ${ping.toFixed(2)} ms`;
+
+      const download = await measureDownload("https://speed.hetzner.de/10MB.bin", 10);
+      document.getElementById("download").textContent = `Download: ${download.toFixed(2)} Mbps`;
+
+      const upload = await measureUpload("https://httpbin.org/post", 2);
+      document.getElementById("upload").textContent = `Upload: ${upload.toFixed(2)} Mbps`;
+    }
+  </script>
+</body>
+</html>
