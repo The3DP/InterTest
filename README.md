@@ -1,6 +1,6 @@
 # InterTest
 InterTest is a html Internet test, made to work with all your devices. 
-You can either test this on your browser, or by clicking[here.](https://www.w3schools.com/html/tryit.asp?filename=tryhtml_default)
+You can either test this on your browser, or by clicking [here.](https://www.w3schools.com/html/tryit.asp?filename=tryhtml_default)
 # Levels
 There are two types of cofiles you can select from.
 The file "L-1.html" run a simple internet test (Download Only)
